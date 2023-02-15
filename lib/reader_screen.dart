@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'overlay_painter.dart';
 
 class ReaderScreen extends StatefulWidget {
   final FlutterBarcodeSdk barcodeReader;
@@ -19,6 +22,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
   late FlutterBarcodeSdk _barcodeReader;
   final _imagePicker = ImagePicker();
   String? _file;
+  List<BarcodeResult>? _results;
+  GlobalKey imageKey = GlobalKey();
 
   @override
   void initState() {
@@ -42,8 +47,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
     );
   }
 
-  GlobalKey imageKey = GlobalKey();
-
   void getImageSizeAndPosition() {
     if (imageKey.currentContext == null) return;
 
@@ -52,6 +55,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
     Size imageSize = imageBox.size;
     Offset imagePosition = imageBox.localToGlobal(Offset.zero);
     print('Image Size: $imageSize, offset: $imagePosition');
+  }
+
+  Widget createOverlay(List<BarcodeResult> results) {
+    return CustomPaint(
+      painter: OverlayPainter(results),
+    );
   }
 
   @override
@@ -78,9 +87,20 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         right: 0.0,
                         bottom: 0.0,
                         left: 0.0,
-                        child: Container(
-                          color: Colors.black.withOpacity(0.5),
-                        ),
+                        child: _results == null || _results!.isEmpty
+                            ? Container(
+                                color: Colors.black.withOpacity(0.1),
+                                child: const Center(
+                                  child: Text(
+                                    'No barcode detected',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ))
+                            : createOverlay(_results!),
                       ),
                     ],
                   ),
@@ -109,16 +129,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
                             if (pickedFile != null) {
                               _file = pickedFile.path;
-
+                              _results =
+                                  await _barcodeReader.decodeFile(_file!);
                               setState(() {});
                             }
                           },
                           child: const Text('Load Image')),
-                      ElevatedButton(
-                          onPressed: () {
-                            getImageSizeAndPosition();
-                          },
-                          child: const Text('Decode Image'))
                     ])),
           ],
         ),
