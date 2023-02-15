@@ -28,9 +28,13 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   Widget getImage() {
     if (_file != null) {
-      Image image = Image.network(
-        _file!,
-      );
+      Image image = kIsWeb
+          ? Image.network(
+              _file!,
+            )
+          : Image.file(
+              File(_file!),
+            );
       return image;
     }
     return Image.asset(
