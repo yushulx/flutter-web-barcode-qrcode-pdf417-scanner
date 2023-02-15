@@ -66,7 +66,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
           children: <Widget>[
             SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 2,
+                height: MediaQuery.of(context).size.height * 3 / 4,
                 child: FittedBox(
                   key: imageKey,
                   fit: BoxFit.contain,
