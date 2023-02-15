@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
@@ -24,19 +22,15 @@ class _ScannerScreenState extends State<ScannerScreen> {
   String _selectedItem = '';
   final List<String> _cameraNames = [''];
   bool _loading = true;
+  bool _isTakingPicture = false;
   List<BarcodeResult>? _results;
+  Size? _previewSize;
 
   @override
   void initState() {
     super.initState();
     _barcodeReader = widget.barcodeReader;
     initCamera();
-  }
-
-  void _toggleLoading() {
-    setState(() {
-      _loading = !_loading;
-    });
   }
 
   Future<void> toggleCamera(int index) async {
@@ -50,7 +44,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       }
 
       _isCameraReady = true;
-
+      _previewSize = _controller!.value.previewSize;
       setState(() {});
 
       decodeFrames();
@@ -58,10 +52,8 @@ class _ScannerScreenState extends State<ScannerScreen> {
       if (e is CameraException) {
         switch (e.code) {
           case 'CameraAccessDenied':
-            // Handle access errors here.
             break;
           default:
-            // Handle other errors here.
             break;
         }
       }
@@ -91,10 +83,16 @@ class _ScannerScreenState extends State<ScannerScreen> {
     if (_controller == null || !_isCameraReady) return;
 
     Future.delayed(const Duration(milliseconds: 20), () async {
-      XFile file = await _controller!.takePicture();
+      if (_controller == null || !_isCameraReady) return;
 
-      _results = await _barcodeReader.decodeFile(file.path);
-      setState(() {});
+      if (!_isTakingPicture) {
+        _isTakingPicture = true;
+        XFile file = await _controller!.takePicture();
+        _results = await _barcodeReader.decodeFile(file.path);
+        setState(() {});
+        _isTakingPicture = false;
+      }
+
       decodeFrames();
     });
   }
@@ -102,6 +100,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   @override
   void dispose() {
     if (_controller != null) _controller!.dispose();
+    _controller = null;
     super.dispose();
   }
 
@@ -135,8 +134,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
                                   'images/default.png',
                                 )
                               : SizedBox(
-                                  width: 640,
-                                  height: 480,
+                                  width: _previewSize == null
+                                      ? 640
+                                      : _previewSize!.width,
+                                  height: _previewSize == null
+                                      ? 480
+                                      : _previewSize!.height,
                                   child: CameraPreview(
                                     _controller!,
                                   )),

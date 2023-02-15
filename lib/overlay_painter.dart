@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 
@@ -20,6 +22,15 @@ class OverlayPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     for (var result in results) {
+      double minX = result.x1.toDouble();
+      double minY = result.y1.toDouble();
+      if (result.x2 < minX) minX = result.x2.toDouble();
+      if (result.x3 < minX) minX = result.x3.toDouble();
+      if (result.x4 < minX) minX = result.x4.toDouble();
+      if (result.y2 < minY) minY = result.y2.toDouble();
+      if (result.y3 < minY) minY = result.y3.toDouble();
+      if (result.y4 < minY) minY = result.y4.toDouble();
+
       canvas.drawLine(Offset(result.x1.toDouble(), result.y1.toDouble()),
           Offset(result.x2.toDouble(), result.y2.toDouble()), paint);
       canvas.drawLine(Offset(result.x2.toDouble(), result.y2.toDouble()),
@@ -41,8 +52,7 @@ class OverlayPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       );
       textPainter.layout(minWidth: 0, maxWidth: size.width);
-      textPainter.paint(
-          canvas, Offset(result.x1.toDouble(), result.y1.toDouble()));
+      textPainter.paint(canvas, Offset(minX, minY));
     }
   }
 
