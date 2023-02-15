@@ -79,23 +79,29 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     ],
                   ),
                 )),
-            ElevatedButton(
-                onPressed: () async {
-                  XFile? pickedFile =
-                      await _imagePicker.pickImage(source: ImageSource.gallery);
+            SizedBox(
+                height: 100,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      ElevatedButton(
+                          onPressed: () async {
+                            XFile? pickedFile = await _imagePicker.pickImage(
+                                source: ImageSource.gallery);
 
-                  if (pickedFile != null) {
-                    _file = pickedFile.path;
+                            if (pickedFile != null) {
+                              _file = pickedFile.path;
 
-                    setState(() {});
-                  }
-                },
-                child: const Text('Load Image')),
-            ElevatedButton(
-                onPressed: () {
-                  getImageSizeAndPosition();
-                },
-                child: const Text('Decode Image'))
+                              setState(() {});
+                            }
+                          },
+                          child: const Text('Load Image')),
+                      ElevatedButton(
+                          onPressed: () {
+                            getImageSizeAndPosition();
+                          },
+                          child: const Text('Decode Image'))
+                    ])),
           ],
         ),
       ),
