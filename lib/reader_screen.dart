@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'package:image_picker/image_picker.dart';
@@ -86,8 +88,20 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     children: <Widget>[
                       ElevatedButton(
                           onPressed: () async {
-                            XFile? pickedFile = await _imagePicker.pickImage(
-                                source: ImageSource.gallery);
+                            XFile? pickedFile;
+                            if (kIsWeb ||
+                                Platform.isWindows ||
+                                Platform.isLinux) {
+                              const XTypeGroup typeGroup = XTypeGroup(
+                                label: 'images',
+                                extensions: <String>['jpg', 'png'],
+                              );
+                              pickedFile = await openFile(
+                                  acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+                            } else if (Platform.isAndroid || Platform.isIOS) {
+                              pickedFile = await _imagePicker.pickImage(
+                                  source: ImageSource.gallery);
+                            }
 
                             if (pickedFile != null) {
                               _file = pickedFile.path;
