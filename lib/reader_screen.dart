@@ -70,12 +70,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
         title: const Text('Reader'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
             SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 3 / 4,
+                height: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top,
                 child: FittedBox(
                   key: imageKey,
                   fit: BoxFit.contain,
@@ -105,37 +105,42 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     ],
                   ),
                 )),
-            SizedBox(
-                height: 100,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton(
-                          onPressed: () async {
-                            XFile? pickedFile;
-                            if (kIsWeb ||
-                                Platform.isWindows ||
-                                Platform.isLinux) {
-                              const XTypeGroup typeGroup = XTypeGroup(
-                                label: 'images',
-                                extensions: <String>['jpg', 'png'],
-                              );
-                              pickedFile = await openFile(
-                                  acceptedTypeGroups: <XTypeGroup>[typeGroup]);
-                            } else if (Platform.isAndroid || Platform.isIOS) {
-                              pickedFile = await _imagePicker.pickImage(
-                                  source: ImageSource.gallery);
-                            }
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                    height: 100,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          ElevatedButton(
+                              onPressed: () async {
+                                XFile? pickedFile;
+                                if (kIsWeb ||
+                                    Platform.isWindows ||
+                                    Platform.isLinux) {
+                                  const XTypeGroup typeGroup = XTypeGroup(
+                                    label: 'images',
+                                    extensions: <String>['jpg', 'png'],
+                                  );
+                                  pickedFile = await openFile(
+                                      acceptedTypeGroups: <XTypeGroup>[
+                                        typeGroup
+                                      ]);
+                                } else if (Platform.isAndroid ||
+                                    Platform.isIOS) {
+                                  pickedFile = await _imagePicker.pickImage(
+                                      source: ImageSource.gallery);
+                                }
 
-                            if (pickedFile != null) {
-                              _file = pickedFile.path;
-                              _results =
-                                  await _barcodeReader.decodeFile(_file!);
-                              setState(() {});
-                            }
-                          },
-                          child: const Text('Load Image')),
-                    ])),
+                                if (pickedFile != null) {
+                                  _file = pickedFile.path;
+                                  _results =
+                                      await _barcodeReader.decodeFile(_file!);
+                                  setState(() {});
+                                }
+                              },
+                              child: const Text('Load Image')),
+                        ]))),
           ],
         ),
       ),
