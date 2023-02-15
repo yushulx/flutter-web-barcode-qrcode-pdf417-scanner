@@ -1,0 +1,33 @@
+name: barcodescanner
+description: A Flutter web project that demonstrates how to use Dynamsoft Barcode Reader SDK to scan 1D barcodes, QR codes and PDF417 in the browser.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.5 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  flutter_barcode_sdk: ^2.2.0
+  image_picker: ^0.8.6+1
+  camera: ^0.10.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - images/default.png
+
