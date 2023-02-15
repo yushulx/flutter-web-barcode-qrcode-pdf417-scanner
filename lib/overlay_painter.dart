@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 
+Widget createOverlay(List<BarcodeResult> results) {
+  return CustomPaint(
+    painter: OverlayPainter(results),
+  );
+}
+
 class OverlayPainter extends CustomPainter {
   final List<BarcodeResult> results;
 

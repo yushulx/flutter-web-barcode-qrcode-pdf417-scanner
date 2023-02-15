@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
@@ -106,6 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 if (_isSDKLoaded == false) {
                   _showDialog('Error', 'Barcode SDK is not loaded.');
+                  return;
+                }
+
+                if (!kIsWeb) {
+                  _showDialog(
+                      'Error', 'Barcode Scanner is only supported on Web.');
                   return;
                 }
 

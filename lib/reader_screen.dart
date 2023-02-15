@@ -57,12 +57,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
     print('Image Size: $imageSize, offset: $imagePosition');
   }
 
-  Widget createOverlay(List<BarcodeResult> results) {
-    return CustomPaint(
-      painter: OverlayPainter(results),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
