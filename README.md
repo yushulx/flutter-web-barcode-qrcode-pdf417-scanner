@@ -20,3 +20,6 @@ A Flutter web project that demonstrates how to use [Dynamsoft Barcode Reader SDK
     
 ## Try Online Demo
 [https://yushulx.me/flutter-web-barcode-qrcode-pdf417-scanner](https://yushulx.me/flutter-web-barcode-qrcode-pdf417-scanner)
+
+
+![flutter web barcode qr scanner](https://www.dynamsoft.com/codepool/img/2023/02/barcode-qrcode-pdf417-scanner.gif)
