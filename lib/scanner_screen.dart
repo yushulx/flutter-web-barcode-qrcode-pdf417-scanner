@@ -65,18 +65,25 @@ class _ScannerScreenState extends State<ScannerScreen> {
   }
 
   Future<void> initCamera() async {
-    _cameras = await availableCameras();
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      _cameras = await availableCameras();
+      if (_cameras.isEmpty) return;
 
-    if (_cameras.isEmpty) return;
+      _cameraNames.clear();
+      for (CameraDescription description in _cameras) {
+        _cameraNames.add(description.name);
+      }
+      _selectedItem = _cameraNames[0];
 
-    _cameraNames.clear();
-    for (CameraDescription description in _cameras) {
-      _cameraNames.add(description.name);
+      toggleCamera(0);
+    } on CameraException catch (e) {
+      print(e);
     }
-    _selectedItem = _cameraNames[0];
-    _loading = false;
 
-    toggleCamera(0);
+    setState(() {
+      _loading = false;
+    });
   }
 
   Future<void> decodeFrames() async {
@@ -181,7 +188,8 @@ class _ScannerScreenState extends State<ScannerScreen> {
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
-                              int index = _cameraNames.indexOf(newValue!);
+                              if (newValue == null || newValue == '') return;
+                              int index = _cameraNames.indexOf(newValue);
                               toggleCamera(index);
                             },
                           )),
