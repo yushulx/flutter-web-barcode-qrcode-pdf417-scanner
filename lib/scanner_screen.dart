@@ -177,7 +177,14 @@ class _ScannerScreenState extends State<ScannerScreen> {
                     alignment:
                         _loading ? Alignment.center : Alignment.topCenter,
                     child: _loading
-                        ? const CircularProgressIndicator()
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const <Widget>[
+                              CircularProgressIndicator(),
+                              SizedBox(height: 16),
+                              Text('Detecting cameras...'),
+                            ],
+                          )
                         : DropdownButton<String>(
                             value: _selectedItem,
                             items: _cameraNames

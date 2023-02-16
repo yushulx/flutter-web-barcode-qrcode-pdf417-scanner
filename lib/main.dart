@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'reader_screen.dart';
 import 'scanner_screen.dart';
@@ -53,7 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
         'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
     await _barcodeReader.init();
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
-    _isSDKLoaded = true;
+    setState(() {
+      _isSDKLoaded = true;
+    });
   }
 
   _showDialog(String title, String message) {
@@ -83,51 +88,83 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                if (_isSDKLoaded == false) {
-                  _showDialog('Error', 'Barcode SDK is not loaded.');
-                  return;
-                }
+        child: _isSDKLoaded
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_isSDKLoaded == false) {
+                        _showDialog('Error', 'Barcode SDK is not loaded.');
+                        return;
+                      }
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ReaderScreen(
-                            barcodeReader: _barcodeReader,
-                          )),
-                );
-              },
-              child: const Text('Barcode Reader'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_isSDKLoaded == false) {
-                  _showDialog('Error', 'Barcode SDK is not loaded.');
-                  return;
-                }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ReaderScreen(
+                                  barcodeReader: _barcodeReader,
+                                )),
+                      );
+                    },
+                    child: const Text('Barcode Reader'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_isSDKLoaded == false) {
+                        _showDialog('Error', 'Barcode SDK is not loaded.');
+                        return;
+                      }
 
-                if (!kIsWeb) {
-                  _showDialog(
-                      'Error', 'Barcode Scanner is only supported on Web.');
-                  return;
-                }
+                      if (!kIsWeb) {
+                        _showDialog('Error',
+                            'Barcode Scanner is only supported on Web.');
+                        return;
+                      }
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ScannerScreen(
-                            barcodeReader: _barcodeReader,
-                          )),
-                );
-              },
-              child: const Text('Barcode Scanner'),
-            ),
-          ],
-        ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ScannerScreen(
+                                  barcodeReader: _barcodeReader,
+                                )),
+                      );
+                    },
+                    child: const Text('Barcode Scanner'),
+                  ),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text.rich(
+                    TextSpan(
+                      text: 'Loading ',
+                      style: const TextStyle(fontSize: 16),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Dynamsoft Barcode Reader',
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.blue,
+                            fontSize: 16,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              launchUrlString(
+                                  'https://www.dynamsoft.com/barcode-reader/sdk-javascript/');
+                            },
+                        ),
+                        const TextSpan(
+                            text:
+                                ' js and wasm files...The first time may take a few seconds.'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -147,4 +184,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  void launch(String s) {}
 }
