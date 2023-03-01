@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'reader_screen.dart';
 import 'scanner_screen.dart';
 import 'settings_screen.dart';
+import 'template.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,6 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
         'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
     await _barcodeReader.init();
     await _barcodeReader.setBarcodeFormats(BarcodeFormat.ALL);
+    int ret = await _barcodeReader.setParameters(Template.balanced);
+    print('Set parameters: $ret');
     setState(() {
       _isSDKLoaded = true;
     });

@@ -12,14 +12,62 @@ Widget createOverlay(List<BarcodeResult> results) {
 class OverlayPainter extends CustomPainter {
   final List<BarcodeResult> results;
 
-  const OverlayPainter(this.results);
+  OverlayPainter(this.results) {
+    results.sort((a, b) {
+      if (((a.y1 + a.y2 + a.y3 + a.y4) / 4 < (b.y1 + b.y2 + b.y3 + b.y4) / 4)) {
+        return -1;
+      }
+      if (((a.y1 + a.y2 + a.y3 + a.y4) / 4 > (b.y1 + b.y2 + b.y3 + b.y4) / 4)) {
+        return 1;
+      }
+      return 0;
+    });
+
+    List<BarcodeResult> all = [];
+    int delta = 0;
+    while (results.isNotEmpty) {
+      List<BarcodeResult> sortedResults = [];
+      BarcodeResult start = results[0];
+      sortedResults.add(start);
+      results.remove(start);
+
+      int maxHeight = [start.y1, start.y2, start.y3, start.y4].reduce(max);
+      while (results.isNotEmpty) {
+        BarcodeResult tmp = results[0];
+
+        if ([tmp.y1, tmp.y2, tmp.y3, tmp.y4].reduce(min) < maxHeight + delta) {
+          sortedResults.add(tmp);
+          results.remove(tmp);
+        } else {
+          break;
+        }
+      }
+
+      sortedResults.sort(((a, b) {
+        if (((a.x1 + a.x2 + a.x3 + a.x4) / 4 <
+            (b.x1 + b.x2 + b.x3 + b.x4) / 4)) {
+          return -1;
+        }
+        if (((a.x1 + a.x2 + a.x3 + a.x4) / 4 >
+            (b.x1 + b.x2 + b.x3 + b.x4) / 4)) {
+          return 1;
+        }
+        return 0;
+      }));
+
+      all += sortedResults;
+    }
+    results.addAll(all);
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.red
+      ..color = Colors.blue
       ..strokeWidth = 5
       ..style = PaintingStyle.stroke;
+
+    int index = 0;
 
     for (var result in results) {
       double minX = result.x1.toDouble();
@@ -40,12 +88,42 @@ class OverlayPainter extends CustomPainter {
       canvas.drawLine(Offset(result.x4.toDouble(), result.y4.toDouble()),
           Offset(result.x1.toDouble(), result.y1.toDouble()), paint);
 
+      // canvas.drawCircle(
+      //     Offset(
+      //         (result.x1.toDouble() +
+      //                 result.x2.toDouble() +
+      //                 result.x3.toDouble() +
+      //                 result.x4.toDouble()) /
+      //             4,
+      //         (result.y1.toDouble() +
+      //                 result.y2.toDouble() +
+      //                 result.y3.toDouble() +
+      //                 result.y4.toDouble()) /
+      //             4),
+      //     20.0,
+      //     paint);
+
+      print(result.text);
+      TextPainter numberPainter = TextPainter(
+        text: TextSpan(
+          text: index.toString(),
+          style: const TextStyle(
+            color: Colors.red,
+            fontSize: 60.0,
+          ),
+        ),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+      );
+      numberPainter.layout(minWidth: 0, maxWidth: size.width);
+      numberPainter.paint(canvas, Offset(minX, minY));
+
       TextPainter textPainter = TextPainter(
         text: TextSpan(
           text: result.text,
           style: const TextStyle(
-            color: Colors.blue,
-            fontSize: 24.0,
+            color: Colors.yellow,
+            fontSize: 22.0,
           ),
         ),
         textAlign: TextAlign.center,
@@ -53,6 +131,8 @@ class OverlayPainter extends CustomPainter {
       );
       textPainter.layout(minWidth: 0, maxWidth: size.width);
       textPainter.paint(canvas, Offset(minX, minY));
+
+      index += 1;
     }
   }
 
