@@ -1,5 +1,6 @@
 /// Template class
 class Template {
+  // Refer to https://demo.dynamsoft.com/barcode-reader/
   static const String balanced = '''
 {
     "FormatSpecification": {
