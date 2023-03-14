@@ -103,7 +103,6 @@ class OverlayPainter extends CustomPainter {
       //     20.0,
       //     paint);
 
-      print(result.text);
       TextPainter numberPainter = TextPainter(
         text: TextSpan(
           text: index.toString(),

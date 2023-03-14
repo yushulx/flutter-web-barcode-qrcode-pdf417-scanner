@@ -1,13 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_sdk/dynamsoft_barcode.dart';
 import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'reader_screen.dart';
 import 'scanner_screen.dart';
+import 'scanner_screen_windows.dart';
 import 'settings_screen.dart';
 import 'template.dart';
 
@@ -119,19 +122,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         return;
                       }
 
-                      if (!kIsWeb) {
-                        _showDialog('Error',
-                            'Barcode Scanner is only supported on Web.');
-                        return;
+                      if (kIsWeb) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ScannerScreen(
+                                    barcodeReader: _barcodeReader,
+                                  )),
+                        );
+                      } else if (Platform.isWindows) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ScannerScreenWindows(
+                                    barcodeReader: _barcodeReader,
+                                  )),
+                        );
                       }
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ScannerScreen(
-                                  barcodeReader: _barcodeReader,
-                                )),
-                      );
                     },
                     child: const Text('Barcode Scanner'),
                   ),
