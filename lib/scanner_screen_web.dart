@@ -5,16 +5,16 @@ import 'package:flutter_barcode_sdk/flutter_barcode_sdk.dart';
 import 'dart:ui' as ui;
 import 'overlay_painter.dart';
 
-class ScannerScreen extends StatefulWidget {
+class ScannerScreenWeb extends StatefulWidget {
   final FlutterBarcodeSdk barcodeReader;
 
-  const ScannerScreen({super.key, required this.barcodeReader});
+  const ScannerScreenWeb({super.key, required this.barcodeReader});
 
   @override
-  State<ScannerScreen> createState() => _ScannerScreenState();
+  State<ScannerScreenWeb> createState() => _ScannerScreenWebState();
 }
 
-class _ScannerScreenState extends State<ScannerScreen> {
+class _ScannerScreenWebState extends State<ScannerScreenWeb> {
   late FlutterBarcodeSdk _barcodeReader;
   late List<CameraDescription> _cameras;
   CameraController? _controller;
