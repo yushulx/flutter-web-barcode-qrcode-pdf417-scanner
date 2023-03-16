@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -166,7 +168,9 @@ class _ScannerScreenMobileState extends State<ScannerScreenMobile> {
           .then((results) {
         if (MediaQuery.of(context).size.width <
             MediaQuery.of(context).size.height) {
-          results = rotate90(results);
+          if (Platform.isAndroid) {
+            results = rotate90(results);
+          }
         }
         setState(() {
           _results = results;

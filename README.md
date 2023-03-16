@@ -1,6 +1,20 @@
-# Flutter Web Demo: Barcode, QR Code and PDF417 Scanner
+# Flutter Barcode, QR Code and PDF417 Scanner
 
-A Flutter web project that demonstrates how to use [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/) to scan 1D barcodes, QR codes and PDF417 in the browser.
+A Flutter project that demonstrates how to use [Dynamsoft Barcode Reader SDK](https://www.dynamsoft.com/barcode-reader/overview/) to scan 1D barcodes, QR codes and PDF417 in web browser, Android and Windows.
+
+## Supported Platforms
+- Flutter Web
+    ```bash
+    flutter run -d chrome
+    ```
+- Flutter Android
+    ```bash
+    flutter run
+    ```
+- Flutter Windows
+    ```bash
+    flutter run -d windows
+    ```
 
 ## Getting Started
 1. Apply for a [30-day trial license](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr) of Dynamsoft Barcode Reader and replace the license key in the `main.dart` file with your own:
@@ -11,10 +25,6 @@ A Flutter web project that demonstrates how to use [Dynamsoft Barcode Reader SDK
     ```
 
 2. Run the project:
-
-    ```bash
-    flutter run -d chrome
-    ```
 
     ![Flutter web barcode, QR code, and PDF417 scanner](https://www.dynamsoft.com/codepool/img/2023/02/flutter-web-barcode-qr-pdf417-scanner.png)
     
