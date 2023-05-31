@@ -37,7 +37,7 @@ class _ScannerScreenWebState extends State<ScannerScreenWeb> {
     _isCameraReady = false;
     if (_controller != null) _controller!.dispose();
 
-    _controller = CameraController(_cameras[index], ResolutionPreset.max);
+    _controller = CameraController(_cameras[index], ResolutionPreset.medium);
     _controller!.initialize().then((_) {
       if (!mounted) {
         return;
